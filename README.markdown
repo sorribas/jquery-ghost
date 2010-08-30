@@ -10,7 +10,9 @@ This plugin uses the fields' `title=` attributes to control the ghost text and a
 
 #### How can I change / remove ghost text?
 
-This version doesn't support changing or removing ghost text, at least not directly (this will be added in the near future).  Below is an example of changing the ghost text.  Currently, the only way to remove ghost text completely is to remove the elements' `blur` and `focus` handlers, though it can be approximated by changing the ghost text to an empty string.
+Although jQuery Ghost isn't implemented as a jQuery UI widget (the overhead and extra dependency don't seem warranted), its interface mimics that of a widget.  See the examples below.
+
+Note that removing ghost text from a field sets its `title=` attribute to the current ghost text, *not* its original value.  This is only relevant if you changed the ghost text between creating and destroying it.
 
 #### Examples
 
@@ -39,10 +41,14 @@ Preventing ghosted text from being submitted, AJAX forms:
         $ghosts.blur(); // blur events trigger ghost behavior on empty fields
     });
 
-Changing a field's ghost text; the `title=` attribute is only used at setup time:
+Retrieving a field's ghost text:
 
-    var old_ghost = $input.data("ghost");
+    $input.ghost("option", "text");
 
-    if ($input.val() === old_ghost) $input.val("");
+Changing a field's ghost text:
 
-    $input.data("ghost", "New ghost text").blur();
+    $input.ghost("option", "text", "New ghost text");
+
+Removing ghost text from a field:
+
+    $input.ghost("destroy");
