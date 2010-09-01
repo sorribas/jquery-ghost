@@ -55,23 +55,28 @@
 			return this.each(function() {
 				var $this = $(this);
 
-				if ($this.data("ghost")) {
-					throw "ghost text has already been applied";
-				}
+				if ($this.data("ghost")) return;
 
-				$this.data("ghost", $this.attr("title")).removeAttr("title");
-			}).focus(ghost_focus).blur(ghost_blur).blur();
+				$this.data("ghost", $this.attr("title"))
+				     .removeAttr("title")
+				     .focus(ghost_focus)
+				     .blur(ghost_blur);
+
+				ghost_blur.call(this);
+			});
 		} else if (method === "destroy") {
 			return this.each(function() {
 				var $this = $(this);
 
-				$this.attr("title", $this.data("ghost")).removeData("ghost");
+				if (!$this.data("ghost")) return;
 
-				if ($this.hasClass("ghosted")) {
-					$this.val("");
-					$this.removeClass("ghosted");
-				}
-			}).unbind("focus", ghost_focus).unbind("blur", ghost_blur);
+				ghost_focus.call(this);
+
+				$this.attr("title", $this.data("ghost"))
+				     .removeData("ghost")
+				     .unbind("focus", ghost_focus)
+				     .unbind("blur", ghost_blur);
+			});
 		} else if (method === "option") {
 			if (option !== "text") {
 				throw "invalid option '" + option + "'"
