@@ -44,6 +44,9 @@
 		var val = $.trim($this.val());
 		var ghost = $this.data("ghost");
 
+		// this arguably does the Wrong Thing if the user manually enters the
+		// ghost text into the field (it will disappear), but is necessary to
+		// handle browsers' auto-filling ghost text
 		if (val === "" || val === ghost) {
 			$this.val(ghost);
 			$this.addClass("ghosted");
@@ -51,6 +54,10 @@
 	}
 
 	$.fn.ghost = function(method, option, value) {
+		// this plugin mimics the behavior of jQuery UI widgets, both to
+		// provide a familiar interface and provide forward compatibility if
+		// it becomes a "real" widget later
+
 		if (method === undefined && option === undefined && value === undefined) {
 			return this.each(function() {
 				var $this = $(this);
@@ -62,6 +69,7 @@
 				     .focus(ghost_focus)
 				     .blur(ghost_blur);
 
+				// the blur handler adds ghost text, if necessary
 				ghost_blur.call(this);
 			});
 		} else if (method === "destroy") {
@@ -70,6 +78,7 @@
 
 				if (!$this.data("ghost")) return;
 
+				// the focus handler removes ghost text, if necessary
 				ghost_focus.call(this);
 
 				$this.attr("title", $this.data("ghost"))
@@ -83,11 +92,16 @@
 			}
 
 			if (typeof value === "undefined") {
+				// only returns the ghost text for the first element in the
+				// set, but that matches the behavior of real widgets
 				return this.data("ghost");
 			} else {
 				return this.each(function() {
 					var $this = $(this);
 
+					// calling .ghost("option", ...) doesn't change focus, so
+					// currently-focused fields will be handled automatically
+					// by the blur handler
 					if ($this.hasClass("ghosted")) {
 						$this.val(value);
 					}
