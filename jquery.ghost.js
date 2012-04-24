@@ -33,7 +33,7 @@
 	function ghost_focus() {
 		var $this = $(this);
 
-		if ($.trim($this.val()) === $this.data("ghost")) {
+		if ($.trim($this.val()) === $this.data("ghost") && $this.hasClass("ghosted")) {
 			$this.val("");
 			$this.removeClass("ghosted");
 		}
@@ -44,10 +44,7 @@
 		var val = $.trim($this.val());
 		var ghost = $this.data("ghost");
 
-		// this arguably does the Wrong Thing if the user manually enters the
-		// ghost text into the field (it will disappear), but is necessary to
-		// handle browsers' auto-filling ghost text
-		if (val === "" || val === ghost) {
+		if (val === "") {
 			$this.val(ghost);
 			$this.addClass("ghosted");
 		}
@@ -67,7 +64,8 @@
 				$this.data("ghost", $this.attr("title"))
 				     .removeAttr("title")
 				     .focus(ghost_focus)
-				     .blur(ghost_blur);
+				     .blur(ghost_blur)
+             .addClass("ghosted"); 
 
 				// the blur handler adds ghost text, if necessary
 				ghost_blur.call(this);
